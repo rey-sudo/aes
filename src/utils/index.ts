@@ -72,32 +72,39 @@ export interface EncryptedData {
 export async function encryptAESGCM(
   plaintext: string,
   password: string
-): Promise<EncryptedData> {
+): Promise<string> {
   const salt = crypto.getRandomValues(new Uint8Array(SALT_LENGTH));
   const iv = crypto.getRandomValues(new Uint8Array(IV_LENGTH));
 
   const key = await deriveKey(password, salt);
-  
+
   const ciphertextBuf = await crypto.subtle.encrypt(
     { name: "AES-GCM", iv },
     key,
     encoder.encode(plaintext)
   );
 
-  return {
-    salt: uint8ToBase64(salt),
-    iv: uint8ToBase64(iv),
-    ciphertext: uint8ToBase64(new Uint8Array(ciphertextBuf)),
-  };
+  const result = [uint8ToBase64(salt), uint8ToBase64(iv), uint8ToBase64(new Uint8Array(ciphertextBuf))]
+
+  return result.join('.')
 }
 
 // ------------------------------------------------------------
 //  Decryption
 // ------------------------------------------------------------
 export async function decryptAESGCM(
-  encrypted: EncryptedData,
+  input: string,
   password: string
 ): Promise<string> {
+
+  const data = input.split('.')
+
+  const encrypted: EncryptedData = {
+    salt: data[0],
+    iv: data[1],
+    ciphertext: data[2]
+  }
+
   const salt = base64ToUint8(encrypted.salt); // 16 bytes
   const iv = base64ToUint8(encrypted.iv); // 12 bytes
   const ciphertext = base64ToUint8(encrypted.ciphertext); // n bytes
