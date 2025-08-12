@@ -63,7 +63,6 @@ async function deriveKey(
 export interface EncryptedData {
   readonly salt: string; // base64
   readonly iv: string; // base64
-  readonly authTag: string; // base64 (last 16 bytes of ciphertext)
   readonly ciphertext: string; // base64 (ciphertext + authTag)
 }
 
@@ -88,7 +87,6 @@ export async function encryptAESGCM(
   return {
     salt: uint8ToBase64(salt),
     iv: uint8ToBase64(iv),
-    authTag: uint8ToBase64(new Uint8Array(ciphertextBuf.slice(-16))),
     ciphertext: uint8ToBase64(new Uint8Array(ciphertextBuf)),
   };
 }
