@@ -1,11 +1,25 @@
 import { decryptAESGCM, encryptAESGCM } from "./utils/index.js"
 
-async function main() {
-    const password = 'password'
-    const encrypted = await encryptAESGCM('hello', password)
+async function encrypt() {
+    /*
+    
+    const password = ''
+    const encrypted = await encryptAESGCM('hola', password)
     console.log(encrypted)
-    const result = await decryptAESGCM(encrypted, password)
+    
+    */
+
+    const encrypted = ""
+    const result = await decryptAESGCM(encrypted, '')
     console.log(result)
 }
 
-main()
+async function decrypt() {
+    const encrypted = ""
+    const result = await decryptAESGCM(encrypted, '')
+    console.log(result)
+}
+
+
+
+decrypt()
